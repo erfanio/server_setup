@@ -39,6 +39,7 @@ DOWNLOAD_DIR=$HOME/totally_legal_stuff" > $HOME/server_setup/.env
 
 # run filemanager, rtorrent and flood
 sudo docker-compose -f server_setup/docker-compose.yml --project-directory server_setup up -d
+sudo chmod +x /usr/local/bin/docker-compose
 
 # download caddy
 mkdir /tmp/caddy-dl
