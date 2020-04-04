@@ -1,0 +1,56 @@
+version: "2"
+services:
+	filebrowser:
+		container_name: filebrowser
+		image: filebrowser/filebrowser
+    restart: always
+		volumes:
+			- ${DOWNLOAD_DIR}:/srv
+		ports:
+			- 127.0.0.1:9000:80
+
+  rtorrent:
+    container_name: rtorrent
+    restart: always
+    build:
+      context: ./alpine-rtorrent
+      args:
+        - UID=${UID}
+        - GID=${GID}
+    image: alpine-rtorrent:local
+		networks:
+			- torrent
+    volumes:
+      - rtorrent_session:/home/rtorrent/rtorrent/.session
+      - ${DOWNLOAD_DIR}:/home/rtorrent/rtorrent/download
+		ports:
+			- 50000:50000
+			- 6881:6881
+			- 6881:6881/udp
+		expose:
+			- 16891
+
+  flood:
+    container_name: flood
+    restart: always
+    build: https://github.com/Flood-UI/flood.git
+    image: flood:local
+    depends_on:
+      - rtorrent
+		networks:
+			- torrent
+    volumes:
+      - flood-data:/data
+		ports:
+			- 127.0.0.1:9010:3000
+		enviroment:
+			- FLOOD_SECRET=${FLOOD_SECRET}
+			- RTORRENT_SCGI_HOST=rtorrent
+			- RTORRENT_SCGI_PORT=16891
+
+volumes:
+   rtorrent-session:
+   flood-data:
+
+networks:
+  torrent:

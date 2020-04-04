@@ -1,0 +1,11 @@
+{ URL_HERE } {
+  gzip
+  log /var/log/caddy/filebrowser.log
+  proxy / localhost:9000
+}
+
+{ URL_HERE } {
+  gzip
+  log /var/log/caddy/flood.log
+  proxy / localhost:9010
+}
