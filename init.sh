@@ -4,10 +4,9 @@ echo "Install ZSH"
 sudo apt update && sudo apt upgrade
 sudo apt install zsh mosh
 
-echo "Create new user $NEW_USER"
-sudo adduser --system --group --ingroup wheel --shell /bin/bash $NEW_USER
-echo "\n\nEnter a password for the new user"
-sudo passwd $NEW_USER
+echo -e "Create new user $NEW_USER\n\n\nEnter a password for the new user"
+adduser $NEW_USER
+usermod -aG sudo erfan
 # disable root login
 sudo usermod --shell /usr/sbin/nologin root
 
