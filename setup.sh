@@ -31,44 +31,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 # install docker compose (maybe change version)
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
-# run filemanager
-sudo docker run -d --restart always \
-  --name filebrowser \
-  -v $HOME/totally_legal_stuff:/srv \
-  -p 127.0.0.1:9000:80 \
-  filebrowser/filebrowser
+# configure environment variables for our docker services
+echo -n "RTORRENT_UID=$(id -u rtorrent)
+RTORRENT_GID=$(id -g rtorrent)
+FLOOD_SECRET=$(openssl rand -hex 32)
+DOWNLOAD_DIR=$HOME/totally_legal_stuff" > $HOME/server_setup/.env
 
-# create shared network for rtorrent and flood
-sudo docker network create torrent
-
-# run rtorrent
-sudo docker container run -d --restart always \
-  --name rtorrent \
-  --hostname rtorrent \
-  --network torrent \
-  -p 50000:50000 \
-  -p 6881:6881 \
-  -p 6881:6881/udp \
-  --expose 16891 \
-  -v $HOME/totally_legal_stuff:/home/rtorrent/rtorrent/download \
-  -v rtorrent-session:/home/rtorrent/rtorrent/.session \
-  tuxmealux/alpine-rtorrent
-
-# build and run flood
-git clone https://github.com/Flood-UI/flood.git $HOME/flood && cd $HOME/flood
-sudo docker build -t  flood-github .
-
-[ ! -f $HOME/.flood-secret ] && echo -n $(openssl rand -hex 32) > $HOME/.flood-secret
-sudo docker run -d --restart always \
-  --name flood \
-  --hostname flood \
-  --network torrent \
-  -v flood-data:/data \
-  -p 127.0.0.1:9010:3000 \
-  -e FLOOD_SECRET=$(cat $HOME/.flood-secret) \
-  -e RTORRENT_SCGI_HOST=rtorrent \
-  -e RTORRENT_SCGI_PORT=16891 \
-  flood-github
+# run filemanager, rtorrent and flood
+sudo docker-compose -f server_setup/docker-compose.yml --project-directory server_setup up -d
 
 # download caddy
 mkdir /tmp/caddy-dl
@@ -76,6 +46,7 @@ wget "https://caddyserver.com/download/linux/amd64?license=personal&telemetry=of
 sudo cp /tmp/caddy-dl/caddy /usr/local/bin/caddy
 sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
 
+sudo mkdir -p /etc/caddy
 sudo cp $HOME/server_setup/Caddyfile /etc/caddy/
 sudo chown root:root /etc/caddy/Caddyfile
 sudo chmod 644 /etc/caddy/Caddyfile
