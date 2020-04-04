@@ -2,7 +2,7 @@ NEW_USER=${1:-erfan}
 
 echo "Install ZSH"
 sudo apt update && sudo apt upgrade
-sudo apt install zsh
+sudo apt install zsh mosh
 
 echo "Create new user $NEW_USER"
 sudo adduser --system --group --ingroup wheel --shell /bin/bash $NEW_USER

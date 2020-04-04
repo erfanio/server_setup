@@ -76,7 +76,7 @@ wget "https://caddyserver.com/download/linux/amd64?license=personal&telemetry=of
 sudo cp /tmp/caddy-dl/caddy /usr/local/bin/caddy
 sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
 
-sudo cp $HOME/dotfiles/Caddyfile /etc/caddy/
+sudo cp $HOME/server_setup/Caddyfile /etc/caddy/
 sudo chown root:root /etc/caddy/Caddyfile
 sudo chmod 644 /etc/caddy/Caddyfile
 
@@ -84,7 +84,7 @@ sudo mkdir -p /var/log/caddy
 sudo chown www-data:www-data /var/log/caddy
 sudo chmod 750 /var/log/caddy
 
-sudo cp $HOME/dotfiles/caddy.service /etc/systemd/system/caddy.service
+sudo cp $HOME/server_setup/caddy.service /etc/systemd/system/caddy.service
 sudo chown root:root /etc/systemd/system/caddy.service
 sudo chmod 644 /etc/systemd/system/caddy.service
 sudo systemctl daemon-reload
