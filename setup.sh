@@ -1,4 +1,6 @@
-sudo apt update
+# Change the time component in bullet train so the server environment is clearly different
+echo "export BULLETTRAIN_TIME_BG=red
+export BULLETTRAIN_TIME_FG=white" > $HOME/.zshrc_custom
 
 sudo adduser --system --group rtorrent --shell /usr/sbin/nologin
 sudo usermod -G rtorrent $USER
@@ -11,6 +13,7 @@ sudo -g rtorrent mkdir -p $HOME/totally_legal_stuff/media
 sudo -g rtorrent mkdir -p $HOME/totally_legal_stuff/other
 
 # install docker
+sudo apt update && \
 sudo apt-get install \
     apt-transport-https \
     ca-certificates \

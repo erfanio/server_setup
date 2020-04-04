@@ -1,11 +1,12 @@
 NEW_USER=${1:-erfan}
 
 echo "Install ZSH"
-sudo apt update && sudo apt install zsh
+sudo apt update && sudo apt upgrade
+sudo apt install zsh
 
 echo "Create new user $NEW_USER"
-sudo adduser --system --group $NEW_USER
-echo "Enter a password for the new user"
+sudo adduser --system --group --ingroup wheel --shell /bin/bash $NEW_USER
+echo "\n\nEnter a password for the new user"
 sudo passwd $NEW_USER
 # disable root login
 sudo usermod --shell /usr/sbin/nologin root
@@ -19,3 +20,4 @@ chown $NEW_USER:$NEW_USER /home/$NEW_USER -R
 echo "Copying ssh keys from root to $NEW_USER"
 mkdir -p /home/$NEW_USER/.ssh
 cp /root/.ssh/authorized_keys /home/$NEW_USER/.ssh/authorized_keys
+chown $NEW_USER:$NEW_USER /home/$NEW_USER/.ssh -R
