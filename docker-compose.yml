@@ -43,6 +43,7 @@ services:
       - torrent
     volumes:
       - flood-data:/data
+      - ${DOWNLOAD_DIR}:/home/rtorrent/rtorrent/download
     ports:
       - 127.0.0.1:9010:3000
     environment:

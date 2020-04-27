@@ -5,11 +5,11 @@ LABEL description="rTorrent on Alpine Linux, with a better Docker integration."
 LABEL website="https://github.com/TuxMeaLux/alpine-rtorrent"
 LABEL version="1.0"
 
-ARG UID=666
 ARG GID=666
+ARG UID=666
 
-RUN addgroup -g $UID rtorrent && \
-    adduser -S -u $GID -G rtorrent rtorrent && \
+RUN addgroup -g $GID rtorrent && \
+    adduser -S -u $UID -G rtorrent rtorrent && \
     apk add --no-cache rtorrent && \
     mkdir -p /home/rtorrent/rtorrent/config.d && \
     mkdir /home/rtorrent/rtorrent/.session && \
