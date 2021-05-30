@@ -4,10 +4,12 @@ services:
 
   filebrowser:
     container_name: filebrowser
-    image: filebrowser/filebrowser
+    image: filebrowser/filebrowser:v2.0.16
+    entrypoint: ["/filebrowser", "-d", "/filebrowser-db/filebrowser.db"]
     restart: always
     volumes:
       - ${DOWNLOAD_DIR}:/srv
+      - filebrowser:/filebrowser-db/
     ports:
       - 127.0.0.1:9000:80
 
@@ -35,25 +37,27 @@ services:
   flood:
     container_name: flood
     restart: always
-    build: https://github.com/Flood-UI/flood.git
-    image: flood:local
+    image: jesec/flood:latest
     depends_on:
       - rtorrent
     networks:
       - torrent
     volumes:
-      - flood-data:/data
+      - flood-rundir:/rundir
       - ${DOWNLOAD_DIR}:/home/rtorrent/rtorrent/download
     ports:
       - 127.0.0.1:9010:3000
     environment:
-      - FLOOD_SECRET=${FLOOD_SECRET}
-      - RTORRENT_SCGI_HOST=rtorrent
-      - RTORRENT_SCGI_PORT=16891
+      - HOME:/rundir
+      - FLOOD_OPTION_secret=${FLOOD_SECRET}
+      - FLOOD_OPTION_allowpath=/home/rtorrent/rtorrent/download
+      - FLOOD_OPTION_rthost=rtorrent
+      - FLOOD_OPTION_rtport=16891
 
 volumes:
-   rtorrent-session:
-   flood-data:
+  filebrowser:
+  rtorrent-session:
+  flood-rundir:
 
 networks:
   torrent:
